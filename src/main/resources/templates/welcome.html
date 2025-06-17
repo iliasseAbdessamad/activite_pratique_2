@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" (car cette page sera injéctée dans une template)
+      layout:decorate="~{layouts/default}"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>ElectroZone | Bienvenu</title>
+</head>
+<body>
+  <div style="margin-top:90px" class="container" layout:fragment="content">
+    <div class="p-5 mb-4 bg-light rounded-3">
+      <div class="py-2">
+        <h2 class="display-5 fw-bold">Bienvenue sur ElectroZone, </h2>
+        <p class="col-md-8 fs-4">
+          votre boutique en ligne dédiée à l’univers de l’électronique !
+          Découvrez une large sélection de produits high-tech : smartphones, ordinateurs, téléviseurs, accessoires,
+          gadgets connectés et bien plus encore.
+        </p>
+        <a href="#" class="ml-auto mt-4 btn btn-primary btn-lg">Consulter notre boutique</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
