@@ -20,9 +20,9 @@ public class Product {
     @NotNull @Positive
     private int quantity;
 
-    @NotNull
+    @NotNull @Column(columnDefinition = "TEXT")
     private String description;
 
-    @NotNull
+    @NotNull @Column(columnDefinition = "TEXT")
     private String image;
 }
