@@ -1,5 +1,6 @@
 package me.iliasse.gestion_produits.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import me.iliasse.gestion_produits.dto.product.ProductDetailsDTO;
 import me.iliasse.gestion_produits.dto.product.ProductListingDto;
 import me.iliasse.gestion_produits.entities.Product;
@@ -28,15 +29,21 @@ public class ProductController {
         this.productRepository = productRepository;
     }
 
-    @GetMapping("/products")
-    public String index(Model model){
-        Set<ProductListingDto> productListingDto = productRepository.findAll().stream().map(p -> {
-            return new ProductListingDto(p, ProductController.CURRENCY, 120);
-        }).collect(Collectors.toSet());
+    @GetMapping({"/products", "/admin/products"})
+    public String index(HttpServletRequest request, Model model){
+        String route = request.getRequestURI();
+        if(route.equals("/products")){
+            Set<ProductListingDto> productListingDto = productRepository.findAll().stream().map(p -> {
+                return new ProductListingDto(p, ProductController.CURRENCY, 120);
+            }).collect(Collectors.toSet());
 
-        model.addAttribute("products", productListingDto);
+            model.addAttribute("products", productListingDto);
 
-        return "views/product/index";
+            return "views/product/index";
+        }else{
+            model.addAttribute("products", this.productRepository.findAll());
+            return "views/product/admin/index";
+        }
     }
 
     @GetMapping("/products/{id}")

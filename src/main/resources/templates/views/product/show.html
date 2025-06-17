@@ -9,7 +9,7 @@
     <title th:text="'ElectroZone | '+${product.name}"></title>
 </head>
 <body>
-    <article layout:fragment="content" style="margin-top:94px" class="container mb-4">
+    <article layout:fragment="content" style="margin-top:94px" class="mb-4">
         <h1 class="mb-4" th:text="${product.name}"></h1>
         <p><b>Prix: <span th:text="${product.formattedPrice}"></span></b></p>
         <p><b>Quantité en stock: <span th:text="${product.quantity}"></span></b></p>

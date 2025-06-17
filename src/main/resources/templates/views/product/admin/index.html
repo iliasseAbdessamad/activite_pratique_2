@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Produits</title>
+</head>
+<body>
+  <section layout:fragment="content" style="margin-top:101px;margin-bottom:24px;" class="container">
+    <h1 style="margin-bottom:45px">Mes produits</h1>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Nom</th>
+          <th>Prix en MAD</th>
+          <th>Quantity</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr th:each="product : ${products}">
+        <td th:text="${product.id}"></td>
+        <td th:text="${product.name}"></td>
+        <td th:text="${product.price}"></td>
+        <td th:text="${product.quantity}">Quantity</td>
+        <td style="display:flex; flex-direction:row; justify-content:left; align-items:center;">
+          <a href="#" class="btn btn-primary" style="margin-right:10px">Editer</a>
+          <form action="#" method="post">
+            <button class="btn btn-danger">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+</body>
+</html>

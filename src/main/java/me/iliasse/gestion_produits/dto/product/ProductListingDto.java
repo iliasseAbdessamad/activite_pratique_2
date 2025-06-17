@@ -6,16 +6,16 @@ import me.iliasse.gestion_produits.entities.Product;
 
 
 @Getter
-public final class ProductListingDto extends ProductDto{
+public class ProductListingDto extends ProductDto{
 
-    private String shortDescription;
+    protected String shortDescription;
 
     public ProductListingDto(Product product, String currency, int limitCharsOfShortDescription) {
         super(product, currency);
         this.shortDescription = this.setShortDescription(product.getDescription(), limitCharsOfShortDescription);
     }
 
-    private String setShortDescription(String description, int limit){
+    protected String setShortDescription(String description, int limit){
         if(description != null){
             if(description.length() - 1 <= limit){
                 return description;
