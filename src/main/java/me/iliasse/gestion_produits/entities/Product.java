@@ -24,4 +24,10 @@ public class Product {
 
     @NotNull @Positive
     private int quantity;
+
+    @NotNull
+    private String description;
+
+    @NotNull
+    private String image;
 }
