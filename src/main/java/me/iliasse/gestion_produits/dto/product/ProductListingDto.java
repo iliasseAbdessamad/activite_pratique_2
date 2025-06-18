@@ -6,7 +6,7 @@ import me.iliasse.gestion_produits.entities.Product;
 
 
 @Getter
-public class ProductListingDto extends ProductDto{
+public final class ProductListingDto extends ProductDto{
 
     protected String shortDescription;
 

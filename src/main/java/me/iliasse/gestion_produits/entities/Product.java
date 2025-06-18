@@ -23,6 +23,6 @@ public class Product {
     @NotNull @Column(columnDefinition = "TEXT")
     private String description;
 
-    @NotNull @Column(columnDefinition = "TEXT")
-    private String image;
+    //@NotNull @Column(columnDefinition = "TEXT")
+    //private String image;
 }

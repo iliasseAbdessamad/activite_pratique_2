@@ -1,8 +1,7 @@
 package me.iliasse.gestion_produits.dto.product;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Getter;
-import lombok.Setter;
 import me.iliasse.gestion_produits.entities.Product;
 
 import java.text.DecimalFormat;
