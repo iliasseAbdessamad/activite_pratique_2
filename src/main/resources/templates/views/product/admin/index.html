@@ -10,7 +10,15 @@
 </head>
 <body>
   <section layout:fragment="content" style="margin-top:101px;margin-bottom:24px;" class="container">
-    <h1 style="margin-bottom:45px">Mes produits</h1>
+    <div class="row" style="margin-bottom:45px">
+      <div class="col-md-8">
+        <h1>Mes produits</h1>
+      </div>
+      <div class="col-md-4">
+        <a th:href="@{/admin/products/new}" class="btn btn-success">Ajouter un produit</a>
+      </div>
+    </div>
+
     <table class="table table-striped">
       <thead>
         <tr>
@@ -29,7 +37,8 @@
         <td th:text="${product.quantity}">Quantity</td>
         <td style="display:flex; flex-direction:row; justify-content:left; align-items:center;">
           <a href="#" class="btn btn-primary" style="margin-right:10px">Editer</a>
-          <form action="#" method="post">
+          <form th:action="@{'/admin/products/' + ${product.id}}" method="post"
+                onsubmit="return confirm('Êtes vous sûre de vouloir supprimer ce produit ?')">
             <button class="btn btn-danger">Supprimer</button>
           </form>
         </td>

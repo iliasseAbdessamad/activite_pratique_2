@@ -7,13 +7,11 @@ import me.iliasse.gestion_produits.dto.product.ProductDetailsDTO;
 import me.iliasse.gestion_produits.dto.product.ProductListingDto;
 import me.iliasse.gestion_produits.entities.Product;
 import me.iliasse.gestion_produits.repository.ProductRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.Option;
 import java.util.List;
@@ -87,6 +85,19 @@ public class ProductController {
 
             this.productRepository.save(product);
 
+            return "redirect:/admin/products";
+        }
+    }
+
+    @PostMapping("/admin/products/{id}")
+    public String delete(@PathVariable Long id){
+        try{
+            this.productRepository.deleteById(id);
+        }
+        catch(EmptyResultDataAccessException ex){
+            //TODO: message flash
+        }
+        finally {
             return "redirect:/admin/products";
         }
     }
