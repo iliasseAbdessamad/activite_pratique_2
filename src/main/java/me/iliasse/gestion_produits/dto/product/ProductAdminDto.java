@@ -9,8 +9,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import me.iliasse.gestion_produits.entities.Product;
 
-@NoArgsConstructor @Setter @Getter
+@Setter @Getter @NoArgsConstructor
 public final class ProductAdminDto {
+
+    private Long id;
 
     @NotBlank(message = "Ce champs est requis")
     @Size(min=3, max=70, message="Le nom du produit doit contenir entre 3 et 70 caractères")
@@ -27,4 +29,12 @@ public final class ProductAdminDto {
 
     @Positive(message = "La quantité doit être strictement positif")
     private int quantity;
+
+    public ProductAdminDto(Product product){
+        this.id = product.getId();
+        this.name = product.getName();
+        this.description = product.getDescription();
+        this.price = product.getPrice();
+        this.quantity = product.getQuantity();
+    }
 }

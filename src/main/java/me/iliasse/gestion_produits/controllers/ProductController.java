@@ -11,15 +11,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-
-import javax.swing.text.html.Option;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Controller
 public class ProductController {
@@ -66,7 +62,8 @@ public class ProductController {
 
     @GetMapping("/admin/products/new")
     public String create(Model model){
-        model.addAttribute("productAdminDto", new ProductAdminDto());
+        ProductAdminDto productAdminDto = new ProductAdminDto();
+        model.addAttribute("productAdminDto", productAdminDto);
         return "views/product/admin/new";
     }
 
@@ -98,6 +95,38 @@ public class ProductController {
             //TODO: message flash
         }
         finally {
+            return "redirect:/admin/products";
+        }
+    }
+
+    @RequestMapping(value="/admin/products/edit/{id}", method={RequestMethod.GET, RequestMethod.POST})
+    public String edit(HttpServletRequest request, @PathVariable Long id, Model model, @Valid @ModelAttribute("productAdminDto") ProductAdminDto productAdminDto, BindingResult results){
+        try{
+            Product product = this.productRepository.findById(id).get();
+
+            if(request.getMethod().equalsIgnoreCase("GET")){
+                ProductAdminDto prdtAdminDto = new ProductAdminDto(product);
+                model.addAttribute("productAdminDto", prdtAdminDto);
+
+                return "views/product/admin/edit";
+            }
+            else{
+                if(results.hasErrors()){
+                    return "views/product/admin/edit";
+                }
+                else{
+                    product.setName(productAdminDto.getName());
+                    product.setDescription(productAdminDto.getDescription());
+                    product.setPrice(productAdminDto.getPrice());
+                    product.setQuantity(productAdminDto.getQuantity());
+
+                    this.productRepository.save(product);
+
+                    return "redirect:/admin/products";
+                }
+            }
+        }
+        catch(NoSuchElementException ex){
             return "redirect:/admin/products";
         }
     }

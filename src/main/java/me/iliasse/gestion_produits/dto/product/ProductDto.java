@@ -13,10 +13,13 @@ public abstract class ProductDto {
     protected Long id;
     protected String name;
     protected String formattedPrice;
+    protected String currency;
 
     public ProductDto(Product product, String currency){
         this.id = product.getId();
         this.name = product.getName();
+        this.currency = currency;
+
         this.formattedPrice =  this.formatPrice(product.getPrice(), currency);
     }
 
