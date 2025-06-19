@@ -1,13 +1,11 @@
 package me.iliasse.gestion_produits.dto.product;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import me.iliasse.gestion_produits.entities.Product;
+import org.springframework.web.multipart.MultipartFile;
 
 @Setter @Getter @NoArgsConstructor
 public final class ProductAdminDto {
@@ -22,7 +20,7 @@ public final class ProductAdminDto {
     @Size(min = 20, message = "La déscription doit contenir au moin 20 caractères")
     private String description;
 
-    //private String image;
+    private String image;
 
     @Positive(message = "Le prix doit être strictement positif")
     private double price;
@@ -30,11 +28,14 @@ public final class ProductAdminDto {
     @Positive(message = "La quantité doit être strictement positif")
     private int quantity;
 
+    private MultipartFile img;
+
     public ProductAdminDto(Product product){
         this.id = product.getId();
         this.name = product.getName();
         this.description = product.getDescription();
         this.price = product.getPrice();
         this.quantity = product.getQuantity();
+        this.image = product.getImage();
     }
 }

@@ -11,10 +11,19 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.NoSuchElementException;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Controller
@@ -23,6 +32,8 @@ public class ProductController {
     private static final String CURRENCY = "MAD";
 
     private ProductRepository productRepository;
+    private final static Path uploadPath = Paths.get("uploads");
+
 
     public ProductController(ProductRepository productRepository){
         this.productRepository = productRepository;
@@ -69,18 +80,33 @@ public class ProductController {
 
     @PostMapping("/admin/products")
     public String save(@Valid @ModelAttribute("productAdminDto") ProductAdminDto productAdminDto, BindingResult results){
+        if(productAdminDto.getImg() == null || productAdminDto.getImg().isEmpty()){
+            results.rejectValue("img", "img.empty", "Une image du produit est requise");
+        }
+
         if(results.hasErrors()){
             return "views/product/admin/new";
         }
         else{
-            Product product = Product.builder()
-                    .name(productAdminDto.getName())
-                    .description(productAdminDto.getDescription())
-                    .price(productAdminDto.getPrice())
-                    .quantity(productAdminDto.getQuantity())
-                    .build();
+            try{
+                //uploads image
+                String uniqFileName = this.uploadImageAndGetUniqFileName(productAdminDto.getImg());
 
-            this.productRepository.save(product);
+                //save product
+                Product product = Product.builder()
+                        .name(productAdminDto.getName())
+                        .description(productAdminDto.getDescription())
+                        .price(productAdminDto.getPrice())
+                        .quantity(productAdminDto.getQuantity())
+                        .image(uniqFileName)
+                        .build();
+
+                this.productRepository.save(product);
+            }
+            catch(Exception ex){
+                System.out.println(ex.getMessage());
+            }
+
 
             return "redirect:/admin/products";
         }
@@ -89,7 +115,12 @@ public class ProductController {
     @PostMapping("/admin/products/{id}")
     public String delete(@PathVariable Long id){
         try{
-            this.productRepository.deleteById(id);
+            Product product = this.productRepository.findById(id).get();
+            this.productRepository.delete(product);
+
+            // Suppression de l'image associée au produit
+            this.deleteAssociatedImg(product);
+
         }
         catch(EmptyResultDataAccessException ex){
             //TODO: message flash
@@ -100,7 +131,7 @@ public class ProductController {
     }
 
     @RequestMapping(value="/admin/products/edit/{id}", method={RequestMethod.GET, RequestMethod.POST})
-    public String edit(HttpServletRequest request, @PathVariable Long id, Model model, @Valid @ModelAttribute("productAdminDto") ProductAdminDto productAdminDto, BindingResult results){
+    public String edit(HttpServletRequest request, @PathVariable Long id, Model model, @Valid @ModelAttribute("productAdminDto") ProductAdminDto productAdminDto, BindingResult results) throws IOException {
         try{
             Product product = this.productRepository.findById(id).get();
 
@@ -111,14 +142,25 @@ public class ProductController {
                 return "views/product/admin/edit";
             }
             else{
+                if(productAdminDto.getImg() == null || productAdminDto.getImg().isEmpty()){
+                    results.rejectValue("img", "img.empty", "Une image du produit est requise");
+                }
+
                 if(results.hasErrors()){
                     return "views/product/admin/edit";
                 }
                 else{
+                    //delete old one and then...
+                    this.deleteAssociatedImg(product);
+
+                    //... upload the new one
+                    String uniqFileName = this.uploadImageAndGetUniqFileName(productAdminDto.getImg());
+
                     product.setName(productAdminDto.getName());
                     product.setDescription(productAdminDto.getDescription());
                     product.setPrice(productAdminDto.getPrice());
                     product.setQuantity(productAdminDto.getQuantity());
+                    product.setImage(uniqFileName);
 
                     this.productRepository.save(product);
 
@@ -128,6 +170,49 @@ public class ProductController {
         }
         catch(NoSuchElementException ex){
             return "redirect:/admin/products";
+        }
+    }
+
+    private String uploadImageAndGetUniqFileName(MultipartFile img) {
+        InputStream stream = null;
+        try{
+            String originalFilename = img.getOriginalFilename();
+            String ext =  originalFilename.substring(originalFilename.lastIndexOf('.'));
+            String uniqFileName = "img_"+ UUID.randomUUID() + ext;
+
+            stream = img.getInputStream();
+
+            Path filePath = uploadPath.resolve(uniqFileName);
+            Files.copy(stream, filePath, StandardCopyOption.REPLACE_EXISTING);
+            return uniqFileName;
+        }
+        catch(Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        finally{
+            try{
+                stream.close();
+            }
+            catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+        }
+
+        return null;
+    }
+
+    private void deleteAssociatedImg(Product product){
+        String imageName = product.getImage();
+        if (imageName != null && !imageName.isEmpty()) {
+            Path imagePath = Paths.get(uploadPath.toString(), imageName);
+            File imageFile = imagePath.toFile();
+            if (imageFile.exists()) {
+                try {
+                    Files.delete(imagePath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

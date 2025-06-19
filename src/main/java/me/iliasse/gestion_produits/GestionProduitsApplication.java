@@ -8,23 +8,34 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class GestionProduitsApplication {
+
+    final static String UPLOAD_DIR = "uploads/";
 
 	public static void main(String[] args) {
 		SpringApplication.run(GestionProduitsApplication.class, args);
 	}
 
 	@Bean
-	public CommandLineRunner initDatabase(ProductRepository productRepository){
+	public CommandLineRunner start(ProductRepository productRepository){
 		return (String... args) -> {
 			try{
+                //Creates uplaods directory to store products images
+                createUploadsDir();
+
+                //initialise database
 				productRepository.save(
 						Product.builder()
 								.name("Playstation 5")
 								.price(2100)
-								//.image("")
+								.image("ps5.jfif")
 								.quantity(23)
 								.description("La PS5 est la console de nouvelle génération de Sony, conçue pour offrir des performances exceptionnelles et une immersion totale. Elle est équipée d’un processeur AMD Ryzen Zen 2 à 8 cœurs, d’un GPU RDNA 2, et d’un SSD ultra-rapide de 825 Go, ce qui permet des temps de chargement quasi instantanés et des graphismes en 4K fluides jusqu’à 120 images par seconde.\n" +
 										"\n" +
@@ -37,7 +48,7 @@ public class GestionProduitsApplication {
 								.name("Xbox One")
 								.price(1700)
 								.quantity(30)
-								//.image("")
+								.image("xbox.jfif")
 								.description("La Xbox One est une console de jeu développée par Microsoft, pensée pour offrir une expérience de divertissement complète. Elle est équipée d’un processeur AMD 8 cœurs, d’un GPU puissant, et propose une mémoire vive de 8 Go, assurant de bonnes performances pour le jeu et le multimédia.\n" +
 										"\n" +
 										"Compatible avec une large sélection de jeux, la Xbox One permet également de lire des films, écouter de la musique et accéder à des applications comme Netflix ou YouTube. Son interface fluide, sa manette ergonomique, et sa fonctionnalité de rétrocompatibilité avec les jeux Xbox 360 en font une console polyvalente.\n" +
@@ -49,7 +60,7 @@ public class GestionProduitsApplication {
 								.name("Azus Gamer")
 								.price(15000)
 								.quantity(10)
-								//.image("")
+								.image("azur.jfif")
 								.description("Azur Gamer est une boutique spécialisée dans la vente de matériel et d’accessoires pour les passionnés de jeux vidéo. Elle propose une large gamme de consoles (PS5, Xbox, Nintendo Switch), de jeux vidéo récents et rétro, ainsi que de nombreux accessoires : manettes, casques, claviers gaming, souris, chaises ergonomiques et bien plus encore.\n" +
 										"\n" +
 										"Toujours à l’écoute des gamers, Azur Gamer mise sur des produits de qualité, des prix compétitifs et un service client attentionné. Que vous soyez un joueur occasionnel ou un compétiteur acharné, vous y trouverez tout ce qu’il faut pour améliorer votre expérience de jeu.\n" +
@@ -61,7 +72,7 @@ public class GestionProduitsApplication {
 								.name("IPhone 12")
 								.price(10000)
 								.quantity(14)
-								//.image("")
+								.image("iphone11.jfif")
 								.description("L’iPhone 12 d’Apple allie performance et élégance. Il est équipé de la puce A14 Bionic, l’une des plus rapides du marché, offrant une fluidité remarquable pour toutes les tâches, du jeu aux applications pro.\n" +
 										"\n" +
 										"Son écran Super Retina XDR de 6,1 pouces affiche des couleurs éclatantes et un contraste exceptionnel. Compatible avec la 5G, il permet des téléchargements ultra-rapides et une navigation fluide.\n" +
@@ -75,7 +86,7 @@ public class GestionProduitsApplication {
 								.name("Souris sans fil HP")
 								.price(120)
 								.quantity(50)
-								//.image("")
+								.image("souris.jfif")
 								.description("La souris sans fil HP est un accessoire fiable et pratique, idéal pour un usage quotidien à la maison, au bureau ou en déplacement. Grâce à sa connexion sans fil via récepteur USB ou Bluetooth (selon le modèle), elle offre une grande liberté de mouvement sans encombrement de câbles.\n" +
 										"\n" +
 										"Elle est conçue pour un confort optimal, avec une forme ergonomique adaptée aussi bien aux droitiers qu’aux gauchers, et une bonne prise en main pour un usage prolongé. Son capteur optique précis permet un déplacement fluide du curseur, que ce soit sur un bureau, un tapis ou une surface lisse.\n" +
@@ -87,7 +98,7 @@ public class GestionProduitsApplication {
 								.name("Casque Azus Gamer")
 								.price(300)
 								.quantity(33)
-								//.image("")
+								.image("casque.jfif")
 								.description("Le casque gamer Azus est un accessoire essentiel pour une expérience de jeu immersive. Doté de haut-parleurs haute définition, il offre un son stéréo ou surround puissant, idéal pour repérer chaque détail sonore : pas, tirs, ambiances... tout devient plus réel.\n" +
 										"\n" +
 										"Conçu pour le confort pendant les longues sessions de jeu, il dispose de coussinets rembourrés, d’un arceau réglable et parfois d’un design léger qui réduit la fatigue. Son microphone intégré, souvent ajustable ou amovible, garantit une communication claire avec les coéquipiers.\n" +
@@ -101,7 +112,7 @@ public class GestionProduitsApplication {
 								.name("Samsung Galaxy Watch")
 								.price(420)
 								.quantity(12)
-								//.image("")
+								.image("watch.jfif")
 								.description("La Samsung Galaxy Watch est bien plus qu’une montre : c’est un assistant intelligent qui vous accompagne partout. Elle permet de recevoir vos notifications, appels et messages directement à votre poignet, tout en gardant un œil sur votre santé et votre activité physique.\n" +
 										"\n" +
 										"Dotée d’un écran AMOLED lumineux, d’un design élégant et personnalisable, elle s’adapte aussi bien au sport qu’au quotidien. Elle intègre des capteurs avancés pour suivre votre rythme cardiaque, vos pas, votre sommeil, et même votre niveau de stress. Certains modèles offrent aussi un GPS intégré, la mesure d’oxygène dans le sang, ou encore un ECG.\n" +
@@ -115,7 +126,7 @@ public class GestionProduitsApplication {
 								.name("Vidéoprojecteur portable")
 								.price(420)
 								.quantity(12)
-								//.image("")
+								.image("projecteur.jfif")
 								.description("Le vidéoprojecteur portable transforme n’importe quel mur en écran géant, que ce soit pour un film, une présentation ou une session de jeu. Compact et facile à transporter, il est parfait pour les soirées cinéma à la maison, les déplacements professionnels ou les vacances.\n" +
 										"\n" +
 										"Il offre une image claire en HD ou Full HD, avec une projection allant jusqu’à 120 pouces selon le modèle et la distance. Grâce à ses connectivités variées (HDMI, USB, Bluetooth, Wi-Fi), il se connecte facilement à votre smartphone, ordinateur, console ou clé USB.\n" +
@@ -131,4 +142,19 @@ public class GestionProduitsApplication {
 			}
 		};
 	}
+
+    //creates uploads directory to store products images
+    private static void createUploadsDir(){
+        Path uploadPath = Paths.get(UPLOAD_DIR);
+        if(Files.notExists(uploadPath)){
+            try{
+                Files.createDirectories(uploadPath);
+                System.out.println("Application : Uploads directory created");
+            }
+            catch(IOException ex){
+                System.out.println("Application : Cannot create directory");
+                System.out.println(ex.getMessage());
+            }
+        }
+    }
 }
