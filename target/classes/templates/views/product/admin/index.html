@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Produits</title>
+</head>
+<body>
+  <section layout:fragment="content" style="margin-top:101px;margin-bottom:24px;" class="container">
+    <div class="row" style="margin-bottom:45px">
+      <div class="col-md-8">
+        <h1>Mes produits</h1>
+      </div>
+      <div class="col-md-4">
+        <a th:href="@{/admin/products/new}" class="btn btn-success">Ajouter un produit</a>
+      </div>
+    </div>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Nom</th>
+          <th>Prix en MAD</th>
+          <th>Quantity</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr th:each="product : ${products}">
+        <td th:text="${product.id}"></td>
+        <td th:text="${product.name}"></td>
+        <td th:text="${product.price}"></td>
+        <td th:text="${product.quantity}"></td>
+        <td style="display:flex; flex-direction:row; justify-content:left; align-items:center;">
+          <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" class="btn btn-primary" style="margin-right:10px">Editer</a>
+          <form th:action="@{'/admin/products/' + ${product.id}}" method="post"
+                onsubmit="return confirm('Êtes vous sûre de vouloir supprimer ce produit ?')">
+            <button class="btn btn-danger">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+</body>
+</html>

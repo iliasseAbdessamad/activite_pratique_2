@@ -142,25 +142,24 @@ public class ProductController {
                 return "views/product/admin/edit";
             }
             else{
-                if(productAdminDto.getImg() == null || productAdminDto.getImg().isEmpty()){
-                    results.rejectValue("img", "img.empty", "Une image du produit est requise");
-                }
 
                 if(results.hasErrors()){
                     return "views/product/admin/edit";
                 }
                 else{
-                    //delete old one and then...
-                    this.deleteAssociatedImg(product);
-
-                    //... upload the new one
-                    String uniqFileName = this.uploadImageAndGetUniqFileName(productAdminDto.getImg());
-
+                    if(productAdminDto.getImg() == null || productAdminDto.getImg().isEmpty()){
+                        productAdminDto.setImage(product.getImage());
+                        System.out.println("Here... " + product.getImage());
+                    }
+                    else{
+                        String uniqFileName = this.uploadImageAndGetUniqFileName(productAdminDto.getImg());
+                        product.setImage(uniqFileName);
+                    }
                     product.setName(productAdminDto.getName());
                     product.setDescription(productAdminDto.getDescription());
                     product.setPrice(productAdminDto.getPrice());
                     product.setQuantity(productAdminDto.getQuantity());
-                    product.setImage(uniqFileName);
+
 
                     this.productRepository.save(product);
 

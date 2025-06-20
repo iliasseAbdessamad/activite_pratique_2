@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter un produit</title>
+</head>
+<body>
+    <section layout:fragment="content" style="margin-top: 100px;">
+        <div class="row mb-4">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <h1 class="mb-4">Ajouter un produit</h1>
+                <form class="form" method="post"
+                      th:action="@{/admin/products}" th:object="${productAdminDto}"
+                    enctype="multipart/form-data"
+                >
+                    <div class="mb-3">
+                        <div class="row">
+                            <div class=col-md-6>
+                                <label for="name" class="form-label"><b>Nom du produit</b></label>
+                                <input type="text" id="name" th:field="*{name}" class="form-control" value="" />
+                                <small th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></small>
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <label for="price" class="form-label"><b>Prix du produit</b></label>
+                                        <input type="number" id="price" th:field="*{price}" class="form-control" value="" />
+                                        <small th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="text-danger"></small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="quantity" class="form-label"><b>Quantité en stock</b></label>
+                                        <input type="number" id="quantity" th:field="*{quantity}" class="form-control" value="" />
+                                        <small th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}" class="text-danger"></small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="width:fit-content; margin-left:auto;">
+                                <label for="image" class="form-label"><b>Image du produit</b></label>
+                                <div id="image">
+                                    <input type="file" th:field="*{img}" accept="image/*" />
+                                </div>
+                                <small class="text-danger" th:if="${#fields.hasErrors('img')}" th:errors="*{img}"></small>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:20px;">
+                        <label for="description" class="form-label"><b>Description du produit</b></label>
+                        <textarea id="description" th:field="*{description}" class="form-control text-area-fixe"></textarea>
+                        <small th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="text-danger"></small>
+                    </div>
+                    <button class="btn btn-offset btn-primary">Ajouter</button>
+                </form>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </section>
+</body>
+</html>
