@@ -7,9 +7,6 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class GestionProduitsApplication {
-
-    final static String UPLOAD_DIR = "uploads/";
-
 	public static void main(String[] args) {
 		SpringApplication.run(GestionProduitsApplication.class, args);
 	}

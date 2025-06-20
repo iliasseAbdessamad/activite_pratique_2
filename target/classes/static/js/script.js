@@ -10,7 +10,7 @@ inputFileContainer.style.borderRadius = "7px";
 if(window.location.href.endsWith("/new")){
     inputFileContainer.style.backgroundImage = "url('/images/default.png')";
 }
-inputFileContainer.style.backgroundSize = "cover";
+inputFileContainer.style.backgroundSize = "contain";
 inputFileContainer.style.backgroundPosition = "center";
 
 inputFile.style.opacity = "0";

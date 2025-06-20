@@ -144,12 +144,17 @@ public class ProductController {
             else{
 
                 if(results.hasErrors()){
+                    System.out.println("----------");
+                    System.out.println("Has eror");
+                    System.out.println("----------");
                     return "views/product/admin/edit";
                 }
                 else{
                     if(productAdminDto.getImg() == null || productAdminDto.getImg().isEmpty()){
                         productAdminDto.setImage(product.getImage());
+                        System.out.println("----------");
                         System.out.println("Here... " + product.getImage());
+                        System.out.println("----------");
                     }
                     else{
                         String uniqFileName = this.uploadImageAndGetUniqFileName(productAdminDto.getImg());

@@ -7,14 +7,33 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="'ElectroZone | '+${product.name}"></title>
+    <style>
+        .divImage{
+            width: 300px;
+            height: 400px;
+            background-size: contain;
+            background-position: center;
+            border: 0.2px solid gray;
+            border-radius: 7px;
+            background-repeat:no-repeat;
+            margin-left: auto;
+        }
+    </style>
 </head>
 <body>
-    <article layout:fragment="content" style="margin-top:94px" class="mb-4">
-        <h1 class="mb-4" th:text="${product.name}"></h1>
-        <p><b>Prix: <span th:text="${product.formattedPrice}"></span></b></p>
-        <p><b>Quantité en stock: <span th:text="${product.quantity}"></span></b></p>
-        <h4 style="margin: 50px 0 22px 0;">description</h4>
-        <div th:utext="${product.formattedDescription}"></div>
+    <article class="container mb-4" layout:fragment="content" style="margin-top:94px">
+        <div class="row">
+            <div class="col-md-7">
+                <h1 class="mb-4" th:text="${product.name}"></h1>
+                <p><b>Prix: <span th:text="${product.formattedPrice}"></span></b></p>
+                <p><b>Quantité en stock: <span th:text="${product.quantity}"></span></b></p>
+                <h4 style="margin: 50px 0 22px 0;">description</h4>
+                <div th:utext="${product.formattedDescription}"></div>
+            </div>
+            <div class="col-md-5">
+                <div class="divImage" th:style="'background-image: url(/uploads/' + ${product.image} + ');'"></div>
+            </div>
+        </div>
     </article>
 </body>
 </html>
