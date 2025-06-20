@@ -37,6 +37,12 @@
                                     <small th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}" class="text-danger"></small>
                                 </div>
                             </div>
+                            <div class="mb-3 mt-3">
+                                <label class="form-label d-flex" style="align-items:center">
+                                    <b style="margin-right:7px">Publier : </b>
+                                    <input type="checkbox" th:field="*{published}" style="width:20px;height:20px;" />
+                                </label>
+                            </div>
                         </div>
                         <div class="col-md-6" style="width:fit-content; margin-left:auto;">
                             <label for="image" class="form-label"><b>Image du produit</b></label>

@@ -6,6 +6,7 @@ import me.iliasse.gestion_produits.dto.product.ProductAdminDto;
 import me.iliasse.gestion_produits.dto.product.ProductDetailsDTO;
 import me.iliasse.gestion_produits.dto.product.ProductListingDto;
 import me.iliasse.gestion_produits.entities.Product;
+import me.iliasse.gestion_produits.exceptions.TryToDisplayNotPublishedProductException;
 import me.iliasse.gestion_produits.repository.ProductRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Controller;
@@ -43,7 +44,7 @@ public class ProductController {
     public String index(HttpServletRequest request, Model model){
         String route = request.getRequestURI();
         if(route.equals("/products")){
-            Set<ProductListingDto> productListingDto = productRepository.findAll().stream().map(p -> {
+            Set<ProductListingDto> productListingDto = productRepository.findByPublishedTrue().stream().map(p -> {
                 return new ProductListingDto(p, ProductController.CURRENCY, 120);
             }).collect(Collectors.toSet());
 
@@ -60,6 +61,10 @@ public class ProductController {
     public String show(@PathVariable Long id, Model model){
         try{
             Product product = this.productRepository.findById(id).get();
+            if(!product.isPublished()){
+                throw new TryToDisplayNotPublishedProductException();
+            }
+
             ProductDetailsDTO productDetailsDTO = new ProductDetailsDTO(product, ProductController.CURRENCY);
 
             model.addAttribute("product", productDetailsDTO);
@@ -67,6 +72,9 @@ public class ProductController {
             return "views/product/show";
 
         }catch(NoSuchElementException ex){
+            return "redirect:/products";
+        }
+        catch(TryToDisplayNotPublishedProductException ex){
             return "redirect:/products";
         }
     }
@@ -99,6 +107,7 @@ public class ProductController {
                         .price(productAdminDto.getPrice())
                         .quantity(productAdminDto.getQuantity())
                         .image(uniqFileName)
+                        .published(productAdminDto.isPublished())
                         .build();
 
                 this.productRepository.save(product);
@@ -160,6 +169,7 @@ public class ProductController {
                     product.setDescription(productAdminDto.getDescription());
                     product.setPrice(productAdminDto.getPrice());
                     product.setQuantity(productAdminDto.getQuantity());
+                    product.setPublished(productAdminDto.isPublished());
 
                     this.productRepository.save(product);
 

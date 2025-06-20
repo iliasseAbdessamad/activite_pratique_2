@@ -30,6 +30,8 @@ public final class ProductAdminDto {
 
     private MultipartFile img;
 
+    private boolean published;
+
     public ProductAdminDto(Product product){
         this.id = product.getId();
         this.name = product.getName();
@@ -37,5 +39,6 @@ public final class ProductAdminDto {
         this.price = product.getPrice();
         this.quantity = product.getQuantity();
         this.image = product.getImage();
+        this.published = product.isPublished();
     }
 }

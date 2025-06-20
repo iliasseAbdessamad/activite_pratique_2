@@ -7,7 +7,6 @@ import lombok.*;
 @Entity
 @NoArgsConstructor @AllArgsConstructor @Getter @Setter @ToString @Builder
 public class Product {
-
     @Id @GeneratedValue
     private Long id;
 
@@ -25,4 +24,6 @@ public class Product {
 
     @NotNull @Column(columnDefinition = "TEXT")
     private String image;
+
+    private boolean published = false;
 }
