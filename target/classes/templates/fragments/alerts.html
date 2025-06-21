@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymleaf.org"
+>
+<body>
+    <div th:fragment="alerts">
+        <div th:if="${success}" class="p-8 alert alert-success text-center" role="alert" th:text="${success}"></div>
+        <div th:if="${error}" class="p-8 alert alert-danger text-center" role="alert" th:text="${error}"></div>
+    </div>
+</body>
+</html>

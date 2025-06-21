@@ -45,7 +45,7 @@ public class SecurityConfig {
         String[] authorized_ressources = {
                 "/logout",
                 "/login",
-                "/products",
+                "/products/**",
                 "/webjars/**",
                 "/js/**",
                 "/images/**",

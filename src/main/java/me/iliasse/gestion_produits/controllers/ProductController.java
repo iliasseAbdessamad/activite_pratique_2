@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +59,7 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public String show(@PathVariable Long id, Model model){
+    public String show(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes){
         try{
             Product product = this.productRepository.findById(id).get();
             if(!product.isPublished()){
@@ -72,9 +73,11 @@ public class ProductController {
             return "views/product/show";
 
         }catch(NoSuchElementException ex){
+            redirectAttributes.addFlashAttribute("error", "Il n'existe aucun produit qui son id est " + id);
             return "redirect:/products";
         }
         catch(TryToDisplayNotPublishedProductException ex){
+            redirectAttributes.addFlashAttribute("error", "Il n'existe aucun produit qui son id est " + id);
             return "redirect:/products";
         }
     }
@@ -87,7 +90,7 @@ public class ProductController {
     }
 
     @PostMapping("/admin/products")
-    public String save(@Valid @ModelAttribute("productAdminDto") ProductAdminDto productAdminDto, BindingResult results){
+    public String save(@Valid @ModelAttribute("productAdminDto") ProductAdminDto productAdminDto, BindingResult results, RedirectAttributes redirectAttributes){
         if(productAdminDto.getImg() == null || productAdminDto.getImg().isEmpty()){
             results.rejectValue("img", "img.empty", "Une image du produit est requise");
         }
@@ -111,28 +114,29 @@ public class ProductController {
                         .build();
 
                 this.productRepository.save(product);
+                redirectAttributes.addFlashAttribute("success", "Le produit '" + product.getName() + "' a été ajouté avec succès");
             }
             catch(Exception ex){
                 System.out.println(ex.getMessage());
             }
-
 
             return "redirect:/admin/products";
         }
     }
 
     @PostMapping("/admin/products/{id}")
-    public String delete(@PathVariable Long id){
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes){
         try{
             Product product = this.productRepository.findById(id).get();
             this.productRepository.delete(product);
 
             // Suppression de l'image associée au produit
+            redirectAttributes.addFlashAttribute("success", "Le produit '" + product.getName() + "' a été supprimé avec succès");
             this.deleteAssociatedImg(product);
 
         }
         catch(EmptyResultDataAccessException ex){
-            //TODO: message flash
+            System.out.println(ex.getMessage());
         }
         finally {
             return "redirect:/admin/products";
@@ -140,7 +144,7 @@ public class ProductController {
     }
 
     @RequestMapping(value="/admin/products/edit/{id}", method={RequestMethod.GET, RequestMethod.POST})
-    public String edit(HttpServletRequest request, @PathVariable Long id, Model model, @Valid @ModelAttribute("productAdminDto") ProductAdminDto productAdminDto, BindingResult results) throws IOException {
+    public String edit(HttpServletRequest request, @PathVariable Long id, Model model, @Valid @ModelAttribute("productAdminDto") ProductAdminDto productAdminDto, BindingResult results, RedirectAttributes redirectAttributes) throws IOException {
         try{
             Product product = this.productRepository.findById(id).get();
 
@@ -172,12 +176,14 @@ public class ProductController {
                     product.setPublished(productAdminDto.isPublished());
 
                     this.productRepository.save(product);
+                    redirectAttributes.addFlashAttribute("success", "La modification a été effectuée avec succès");
 
                     return "redirect:/admin/products";
                 }
             }
         }
         catch(NoSuchElementException ex){
+            redirectAttributes.addFlashAttribute("danger", "Il n'existe aucun produit qui sont id est " + id);
             return "redirect:/admin/products";
         }
     }
