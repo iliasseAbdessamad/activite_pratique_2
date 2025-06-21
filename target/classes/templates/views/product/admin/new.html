@@ -2,6 +2,7 @@
 <html lang="en"
       xmlns:th="http://www.thymleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymleaf.org/extras/spring-security"
       layout:decorate="~{layouts/default}"
 >
 <head>
@@ -36,7 +37,7 @@
                                         <small th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}" class="text-danger"></small>
                                     </div>
                                 </div>
-                                <div class="mb-3 mt-3">
+                                <div sec:authorize="hasRole('ADMIN')" class="mb-3 mt-3">
                                     <label class="form-label d-flex" style="align-items:center">
                                         <b style="margin-right:7px">Publier : </b>
                                         <input type="checkbox" th:field="*{published}" style="width:20px;height:20px;" />

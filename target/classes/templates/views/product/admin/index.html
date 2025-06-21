@@ -3,6 +3,7 @@
       xmlns:th="http://www.thymleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/default}"
+      xmlns:sec="http://www.thymleaf.org/extras/spring-security"
 >
 <head>
     <meta charset="UTF-8">
@@ -27,7 +28,7 @@
           <th>Prix en MAD</th>
           <th>Quantity</th>
           <th>Etat</th>
-          <th>Action</th>
+          <th sec:authorize="hasRole('ADMIN')">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -37,7 +38,7 @@
         <td th:text="${product.price}"></td>
         <td th:text="${product.quantity}"></td>
         <td th:text="${product.published} ? 'Publié' : 'Non publié'"></td>
-        <td style="display:flex; flex-direction:row; justify-content:left; align-items:center;">
+        <td sec:authorize="hasRole('ADMIN')" style="display:flex; flex-direction:row; justify-content:left; align-items:center;">
           <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" class="btn btn-primary" style="margin-right:10px">Editer</a>
           <form th:action="@{'/admin/products/' + ${product.id}}" method="post"
                 onsubmit="return confirm('Êtes vous sûre de vouloir supprimer ce produit ?')">

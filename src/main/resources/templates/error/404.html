@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>ElectroZone | Page introuvable</title>
+    <style>
+        body{
+            overflow:hidden;
+        }
+        .section{
+            overflow: hidden;
+            width: 100vw;
+            height:100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .div{
+            color: red;
+            font-size: 33px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<section class="section" layout:fragment="content">
+    <div class="div">La page que vous avez demandé n'existe pas sur ce serveur</div>
+</section>
+</body>
+</html>

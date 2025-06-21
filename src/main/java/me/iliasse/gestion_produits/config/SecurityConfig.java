@@ -14,6 +14,15 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
+    CustomAccessDeniedHandlerConfig customAccessDeniedHandler;
+    CustomAuthenticationEntryPointConfig customEntryPoint;
+
+    public SecurityConfig(CustomAccessDeniedHandlerConfig customAccessDeniedHandler, CustomAuthenticationEntryPointConfig customEntryPoint){
+        this.customAccessDeniedHandler = customAccessDeniedHandler;
+        this.customEntryPoint = customEntryPoint;
+
+    }
+
     @Bean PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
@@ -33,18 +42,38 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception  {
 
-        String[] authorized_ressources = { "/", "/products/**", "/webjars/**", "/js/**", "/images/**", "/uploads/**" };
+        String[] authorized_ressources = {
+                "/logout",
+                "/login",
+                "/products",
+                "/webjars/**",
+                "/js/**",
+                "/images/**",
+                "/uploads/**",
+                "/error/**",
+                "/"
+        };
 
         return http
-                .formLogin(Customizer.withDefaults())
+                .formLogin(lf -> 
+                        lf.loginPage("/login").defaultSuccessUrl("/products", true)
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/products")
+                        .invalidateHttpSession(true)
+                )
                 .authorizeHttpRequests(
-                        ar -> ar.requestMatchers("/admin/new", "/admin/save").hasRole("USER")
+                        ar -> ar.requestMatchers("/admin/products/new", "/admin/products/save", "/admin/products").hasRole("USER")
                 )
                 .authorizeHttpRequests(
                         ar -> ar.requestMatchers("/admin/**").hasRole("ADMIN")
                 )
                 .authorizeHttpRequests(
                         ar -> ar.requestMatchers(authorized_ressources).permitAll()
+                )
+                .exceptionHandling(eh ->
+                    eh.accessDeniedHandler(customAccessDeniedHandler).authenticationEntryPoint(customEntryPoint)
                 )
                 .build();
     }
