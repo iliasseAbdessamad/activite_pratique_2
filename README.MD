@@ -1,5 +1,3 @@
-//TOTO : Filtrage, pagination, class css active, message flash 
-
 <h2 style="text-center">
 TP 2 : création d'une application web JEE via Spring boot en utilisant 
 Spring DATA, Spring MVC, Spring Security 
@@ -7,8 +5,8 @@ Spring DATA, Spring MVC, Spring Security
 
 <p>
 <b>Objectif: </b>
-Exploiter la vulnérabilité CSRF (Cross Site Request Forgery) liée à la connexion stateful, 
-et comment s'y mettre face en utilisant les token csrf
+Utilisation de Spring Security, pour gérer les droits d'utilisateurs et protéger les ressources d'une application, 
+et pour ce mettre face contre la faille csrf
 </p>
 
 <br />
