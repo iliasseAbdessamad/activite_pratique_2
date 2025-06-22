@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.UUID;
@@ -42,18 +43,33 @@ public class ProductController {
     }
 
     @GetMapping({"/products", "/admin/products"})
-    public String index(HttpServletRequest request, Model model){
+    public String index(@RequestParam(name="q", required=false) String query, HttpServletRequest request, Model model){
         String route = request.getRequestURI();
         if(route.equals("/products")){
-            Set<ProductListingDto> productListingDto = productRepository.findByPublishedTrue().stream().map(p -> {
-                return new ProductListingDto(p, ProductController.CURRENCY, 120);
-            }).collect(Collectors.toSet());
+            List<ProductListingDto> productListingDto = null;
+            if(query != null && !query.isBlank()){
+                model.addAttribute("query", query);
+
+                productListingDto = this.productRepository.searchByNameOrPriceButPublishedTrue(query).stream().map(p -> {
+                    return new ProductListingDto(p, ProductController.CURRENCY, 120);
+                }).toList();;
+            }
+            else{
+                productListingDto = this.productRepository.findByPublishedTrue().stream().map(p -> {
+                    return new ProductListingDto(p, ProductController.CURRENCY, 120);
+                }).toList();
+            }
 
             model.addAttribute("products", productListingDto);
-
             return "views/product/index";
         }else{
-            model.addAttribute("products", this.productRepository.findAll());
+            if(query != null && !query.isBlank()){
+                model.addAttribute("query", query);
+                model.addAttribute("products", this.productRepository.searchByNameOrPrice(query));
+            }
+            else{
+                model.addAttribute("products", this.productRepository.findAll());
+            }
             return "views/product/admin/index";
         }
     }

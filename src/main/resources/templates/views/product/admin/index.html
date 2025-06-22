@@ -20,7 +20,7 @@
         <a th:href="@{/admin/products/new}" class="btn btn-success">Ajouter un produit</a>
       </div>
     </div>
-
+      <div class="mb-4" th:replace="fragments/search :: search-bar('/admin/products', ${query})"></div>
     <table class="table table-striped">
       <thead>
         <tr>

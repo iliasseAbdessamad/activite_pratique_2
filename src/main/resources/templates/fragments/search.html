@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymleaf.org"
+>
+<body>
+<div th:fragment="search-bar(actionUrl, query)">
+  <form style="margin-bottom:40px;display:flex;align-items:center;width:50%" th:action="@{__${actionUrl}__}" method="get">
+      <input class="form-control" style="margin-right:3px;" th:value="${query}" name="q" type="text" placeholder="Rechercher par nom ou/et par prix du produit"/>
+      <button type="submit" class="btn btn-info">
+        Rechercher
+      </button>
+      <a style="margin-left:3px" th:if="${query != null and !#strings.isEmpty(query)}" th:href="@{__${actionUrl}__}" class="btn btn-warning">
+         Rétablir
+      </a>
+  </form>
+</div>
+</body>
+</html>

@@ -12,15 +12,15 @@
 <body>
   <section layout:fragment="content" style="margin-top:101px;margin-bottom:24px;" class="container">
     <div class="row" style="margin-bottom:45px">
+      <div th:replace="fragments/alerts :: alerts"></div>
       <div class="col-md-8">
-        <div th:replace="fragments/alerts :: alerts"></div>
         <h1>Mes produits</h1>
       </div>
       <div class="col-md-4">
         <a th:href="@{/admin/products/new}" class="btn btn-success">Ajouter un produit</a>
       </div>
     </div>
-
+      <div class="mb-4" th:replace="fragments/search :: search-bar('/admin/products', ${query})"></div>
     <table class="table table-striped">
       <thead>
         <tr>

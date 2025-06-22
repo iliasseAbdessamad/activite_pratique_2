@@ -12,6 +12,7 @@
   <section layout:fragment="content" style="margin-top:87px">
     <div th:replace="fragments/alerts :: alerts"></div>
     <h1 style="margin-bottom:56px">Nos produits</h1>
+    <div th:replace="fragments/search :: search-bar('/products', ${query})"></div>
     <div class="row">
       <div th:each="product : ${products}" class="col-md-4 mb-4">
         <div class="card" style="width: 18rem;">
