@@ -28,13 +28,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-                <a class="nav-link" aria-current="page" th:href="@{/}">Accueil</a>
+                <a class="nav-link" th:classappend="${activePage == 'accueil' ? 'active' : ''}" th:href="@{/}">Accueil</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" aria-current="page" th:href="@{/products}">Produits</a>
+                <a class="nav-link" th:classappend="${activePage == 'products' ? 'active' : ''}" aria-current="page" th:href="@{/products}">Produits</a>
             </li>
             <li sec:authorize="hasAnyRole('ADMIN', 'USER')" class="nav-item">
-                <a class="nav-link" aria-current="page" th:href="@{/admin/products}">Dashboard</a>
+                <a class="nav-link" th:classappend="${activePage == 'dashboard' ? 'active' : ''}" aria-current="page" th:href="@{/admin/products}">Dashboard</a>
             </li>
         </ul>
           <ul class="navbar-nav">
@@ -50,7 +50,7 @@
                   </ul>
               </li>
               <li sec:authorize="isAnonymous()">
-                  <a class="nav-link" th:href="@{/login}">Se connecter</a>
+                  <a class="nav-link" th:classappend="${activePage == 'login' ? 'active' : ''}" th:href="@{/login}">Se connecter</a>
               </li>
           </ul>
       </div>

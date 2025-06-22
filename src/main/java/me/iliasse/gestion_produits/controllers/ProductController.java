@@ -46,6 +46,8 @@ public class ProductController {
     public String index(@RequestParam(name="q", required=false) String query, HttpServletRequest request, Model model){
         String route = request.getRequestURI();
         if(route.equals("/products")){
+            model.addAttribute("activePage", "products");
+
             List<ProductListingDto> productListingDto = null;
             if(query != null && !query.isBlank()){
                 model.addAttribute("query", query);
@@ -70,6 +72,7 @@ public class ProductController {
             else{
                 model.addAttribute("products", this.productRepository.findAll());
             }
+            model.addAttribute("activePage", "dashboard");
             return "views/product/admin/index";
         }
     }
@@ -84,6 +87,7 @@ public class ProductController {
 
             ProductDetailsDTO productDetailsDTO = new ProductDetailsDTO(product, ProductController.CURRENCY);
 
+            model.addAttribute("activePage", "products");
             model.addAttribute("product", productDetailsDTO);
 
             return "views/product/show";
@@ -101,12 +105,15 @@ public class ProductController {
     @GetMapping("/admin/products/new")
     public String create(Model model){
         ProductAdminDto productAdminDto = new ProductAdminDto();
+        model.addAttribute("activePage", "dashboard");
         model.addAttribute("productAdminDto", productAdminDto);
         return "views/product/admin/new";
     }
 
     @PostMapping("/admin/products")
-    public String save(@Valid @ModelAttribute("productAdminDto") ProductAdminDto productAdminDto, BindingResult results, RedirectAttributes redirectAttributes){
+    public String save(@Valid @ModelAttribute("productAdminDto") ProductAdminDto productAdminDto, Model model, BindingResult results, RedirectAttributes redirectAttributes){
+        model.addAttribute("activePage", "dashboard");
+
         if(productAdminDto.getImg() == null || productAdminDto.getImg().isEmpty()){
             results.rejectValue("img", "img.empty", "Une image du produit est requise");
         }
@@ -162,6 +169,8 @@ public class ProductController {
     @RequestMapping(value="/admin/products/edit/{id}", method={RequestMethod.GET, RequestMethod.POST})
     public String edit(HttpServletRequest request, @PathVariable Long id, Model model, @Valid @ModelAttribute("productAdminDto") ProductAdminDto productAdminDto, BindingResult results, RedirectAttributes redirectAttributes) throws IOException {
         try{
+            model.addAttribute("activePage", "dashboard");
+
             Product product = this.productRepository.findById(id).get();
 
             if(request.getMethod().equalsIgnoreCase("GET")){
@@ -199,7 +208,7 @@ public class ProductController {
             }
         }
         catch(NoSuchElementException ex){
-            redirectAttributes.addFlashAttribute("danger", "Il n'existe aucun produit qui sont id est " + id);
+            redirectAttributes.addFlashAttribute("error", "Il n'existe aucun produit qui sont id est " + id);
             return "redirect:/admin/products";
         }
     }
